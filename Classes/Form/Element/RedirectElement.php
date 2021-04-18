@@ -5,10 +5,6 @@ namespace Ayacoo\RedirectTab\Form\Element;
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Configuration\Features;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,8 +26,6 @@ class RedirectElement extends AbstractFormElement
 
     public function render(): array
     {
-        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class);
-
         $templateName = 'List';
         $this->view = GeneralUtility::makeInstance(StandaloneView::class);
         $this->view->setTemplate($templateName);
@@ -48,34 +42,28 @@ class RedirectElement extends AbstractFormElement
 
         $demand = new Demand(
             $site->getRootPageId(),
-            'source_host',
-            'asc',
-            ['*', $host],
+            '*',
             '',
             't3://page?uid=' . $this->data['effectivePid'],
-            [],
-            0,
-            null
+            0
         );
+        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
+        $redirectsForWildcardHost = $this->redirectRepository->findRedirectsByDemand($demand);
 
-
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $uri = $uriBuilder->buildUriFromRoutePath(
-            '/record/edit',
-            [
-                'edit' => [
-                    'pages' => [
-                        $this->data['effectivePid'] => 'edit'
-                    ]
-                ]
-            ]
+        $demand = new Demand(
+            $site->getRootPageId(),
+            $host,
+            '',
+            't3://page?uid=' . $this->data['effectivePid'],
+            0
         );
+        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
+        $redirectsForPageHost = $this->redirectRepository->findRedirectsByDemand($demand);
 
         $this->view->assignMultiple([
-            'redirects' => $this->redirectRepository->findRedirectsByDemand($demand),
+            'redirects' => array_merge($redirectsForWildcardHost, $redirectsForPageHost),
             'demand' => $demand,
-            'pagination' => $this->preparePagination($demand),
-            'editUri' => $uri
+            'pagination' => $this->preparePagination($demand)
         ]);
 
         $result = $this->initializeResultArray();
