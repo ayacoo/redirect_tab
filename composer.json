@@ -1,7 +1,7 @@
 {
 	"name": "ayacoo/redirect-tab",
 	"type": "typo3-cms-extension",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Show TYPO3 redirects in the page properties",
 	"authors": [
 		{
@@ -12,7 +12,8 @@
 	"homepage": "https://www.ayacoo.de/",
 	"license": "GPL-2.0-or-later",
 	"require": {
-		"typo3/cms-core": "^v11.0.0"
+		"typo3/cms-core": "^11.0",
+		"typo3/cms-redirects": "^11.0"
 	},
 	"autoload": {
 		"psr-4": {

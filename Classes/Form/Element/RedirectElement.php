@@ -4,13 +4,7 @@ declare(strict_types=1);
 namespace Ayacoo\RedirectTab\Form\Element;
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Configuration\Features;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Redirects\Repository\Demand;
@@ -58,24 +52,10 @@ class RedirectElement extends AbstractFormElement
             null
         );
 
-
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $uri = $uriBuilder->buildUriFromRoutePath(
-            '/record/edit',
-            [
-                'edit' => [
-                    'pages' => [
-                        $this->data['effectivePid'] => 'edit'
-                    ]
-                ]
-            ]
-        );
-
         $this->view->assignMultiple([
             'redirects' => $this->redirectRepository->findRedirectsByDemand($demand),
             'demand' => $demand,
-            'pagination' => $this->preparePagination($demand),
-            'editUri' => $uri
+            'pagination' => $this->preparePagination($demand)
         ]);
 
         $result = $this->initializeResultArray();
