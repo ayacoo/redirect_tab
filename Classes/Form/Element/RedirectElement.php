@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace Ayacoo\RedirectTab\Form\Element;
 
+use Ayacoo\RedirectTab\Event\ModifyRedirectsEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -21,13 +24,21 @@ class RedirectElement extends AbstractFormElement
      * @var object|\Psr\Log\LoggerAwareInterface|\TYPO3\CMS\Core\SingletonInterface
      */
     private $redirectRepository;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function render(): array
     {
         $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class);
+        $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
 
         $this->prepareView();
         list($demand, $redirects) = $this->getRedirects();
+
+        $event = $this->eventDispatcher->dispatch(new ModifyRedirectsEvent($redirects));
+        $redirects = $event->getRedirects();
 
         $this->view->assignMultiple([
             'redirects' => $redirects,
@@ -45,67 +56,80 @@ class RedirectElement extends AbstractFormElement
      */
     protected function getRedirects(): array
     {
+        $demand = null;
+        $redirects = [];
+
         /** @var Site $site */
         $site = $this->data['site'];
+        if (!$site instanceof NullSite) {
+            $languageUid = (int)$this->data['databaseRow']['sys_language_uid'];
+            $language = $site->getLanguageById($languageUid);
+            $host = $language->getBase()->getHost();
 
-        $languageUid = (int)$this->data['databaseRow']['sys_language_uid'];
-        $language = $site->getLanguageById($languageUid);
-        $host = $language->getBase()->getHost();
+            $demand = new Demand(
+                $site->getRootPageId(),
+                'source_host',
+                'asc',
+                ['*', $host],
+                '',
+                't3://page?uid=' . $this->data['effectivePid'],
+                [],
+                0,
+                null
+            );
+            $redirectsWithPageIdAsIdentifier = $this->redirectRepository->findRedirectsByDemand($demand);
 
-        $demand = new Demand(
-            $site->getRootPageId(),
-            'source_host',
-            'asc',
-            ['*', $host],
-            '',
-            't3://page?uid=' . $this->data['effectivePid'],
-            [],
-            0,
-            null
-        );
-        $redirectsWithPageIdAsIdentifier = $this->redirectRepository->findRedirectsByDemand($demand);
+            $oldDemand = new Demand(
+                $site->getRootPageId(),
+                'source_host',
+                'asc',
+                ['*', $host],
+                '',
+                $this->data['databaseRow']['slug'],
+                [],
+                0,
+                null
+            );
+            $redirectsWithSlugAsIdentifier = $this->redirectRepository->findRedirectsByDemand($oldDemand);
 
-        $oldDemand = new Demand(
-            $site->getRootPageId(),
-            'source_host',
-            'asc',
-            ['*', $host],
-            '',
-            $this->data['databaseRow']['slug'],
-            [],
-            0,
-            null
-        );
-        $redirectsWithSlugAsIdentifier = $this->redirectRepository->findRedirectsByDemand($oldDemand);
-        $redirects = array_merge($redirectsWithPageIdAsIdentifier, $redirectsWithSlugAsIdentifier);
+            $redirects = array_merge(
+                $redirectsWithPageIdAsIdentifier ?? [],
+                $redirectsWithSlugAsIdentifier ?? []
+            );
+        }
         return array($demand, $redirects);
     }
 
     /**
      * Prepares information for the pagination of the module
+     * @param Demand|null $demand
+     * @return array
      */
-    protected function preparePagination(Demand $demand): array
+    protected function preparePagination(Demand $demand = null): array
     {
-        $count = $this->redirectRepository->countRedirectsByByDemand($demand);
-        $numberOfPages = ceil($count / $demand->getLimit());
-        $endRecord = $demand->getOffset() + $demand->getLimit();
-        if ($endRecord > $count) {
-            $endRecord = $count;
-        }
+        $pagination = [];
+        if ($demand) {
+            $count = $this->redirectRepository->countRedirectsByByDemand($demand);
+            $numberOfPages = ceil($count / $demand->getLimit());
+            $endRecord = $demand->getOffset() + $demand->getLimit();
+            if ($endRecord > $count) {
+                $endRecord = $count;
+            }
 
-        $pagination = [
-            'current' => $demand->getPage(),
-            'numberOfPages' => $numberOfPages,
-            'hasLessPages' => $demand->getPage() > 1,
-            'hasMorePages' => $demand->getPage() < $numberOfPages,
-            'startRecord' => $demand->getOffset() + 1,
-            'endRecord' => $endRecord
-        ];
-        if ($pagination['current'] < $pagination['numberOfPages']) {
-            $pagination['nextPage'] = $pagination['current'] + 1;
-        }
-        if ($pagination['current'] > 1) {
-            $pagination['previousPage'] = $pagination['current'] - 1;
+            $pagination = [
+                'current' => $demand->getPage(),
+                'numberOfPages' => $numberOfPages,
+                'hasLessPages' => $demand->getPage() > 1,
+                'hasMorePages' => $demand->getPage() < $numberOfPages,
+                'startRecord' => $demand->getOffset() + 1,
+                'endRecord' => $endRecord
+            ];
+            if ($pagination['current'] < $pagination['numberOfPages']) {
+                $pagination['nextPage'] = $pagination['current'] + 1;
+            }
+            if ($pagination['current'] > 1) {
+                $pagination['previousPage'] = $pagination['current'] - 1;
+            }
         }
         return $pagination;
     }
