@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Ayacoo\RedirectTab\Form\Element;
 
+use Ayacoo\RedirectTab\Event\ModifyRedirectsEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Redirects\Repository\Demand;
@@ -16,19 +16,28 @@ use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 class RedirectElement extends AbstractFormElement
 {
     /**
-     * @var object|\Psr\Log\LoggerAwareInterface|\TYPO3\CMS\Core\SingletonInterface
+     * @var StandaloneView
      */
     private $view;
 
     /**
-     * @var object|\Psr\Log\LoggerAwareInterface|\TYPO3\CMS\Core\SingletonInterface
+     * @var RedirectRepository
      */
     private $redirectRepository;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function render(): array
     {
+        $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        
         $this->prepareView();
         list($demand, $redirects) = $this->getRedirects();
+
+        $event = $this->eventDispatcher->dispatch(new ModifyRedirectsEvent($redirects));
+        $redirects = $event->getRedirects();
 
         $this->view->assignMultiple([
             'redirects' => $redirects,
