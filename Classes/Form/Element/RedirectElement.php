@@ -26,42 +26,11 @@ class RedirectElement extends AbstractFormElement
 
     public function render(): array
     {
-        $templateName = 'List';
-        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-        $this->view->setTemplate($templateName);
-        $this->view->setTemplateRootPaths(['EXT:redirect_tab/Resources/Private/Templates/Backend']);
-        $this->view->setPartialRootPaths(['EXT:redirect_tab/Resources/Private/Partials/Backend']);
-        $this->view->setLayoutRootPaths(['EXT:redirect_tab/Resources/Private/Layouts']);
-
-        /** @var Site $site */
-        $site = $this->data['site'];
-
-        $languageUid = (int)$this->data['databaseRow']['sys_language_uid'];
-        $language = $site->getLanguageById($languageUid);
-        $host = $language->getBase()->getHost();
-
-        $demand = new Demand(
-            $site->getRootPageId(),
-            '*',
-            '',
-            't3://page?uid=' . $this->data['effectivePid'],
-            0
-        );
-        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
-        $redirectsForWildcardHost = $this->redirectRepository->findRedirectsByDemand($demand);
-
-        $demand = new Demand(
-            $site->getRootPageId(),
-            $host,
-            '',
-            't3://page?uid=' . $this->data['effectivePid'],
-            0
-        );
-        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
-        $redirectsForPageHost = $this->redirectRepository->findRedirectsByDemand($demand);
+        $this->prepareView();
+        list($demand, $redirects) = $this->getRedirects();
 
         $this->view->assignMultiple([
-            'redirects' => array_merge($redirectsForWildcardHost, $redirectsForPageHost),
+            'redirects' => $redirects,
             'demand' => $demand,
             'pagination' => $this->preparePagination($demand)
         ]);
@@ -98,5 +67,76 @@ class RedirectElement extends AbstractFormElement
             $pagination['previousPage'] = $pagination['current'] - 1;
         }
         return $pagination;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getRedirects(): array
+    {
+        /** @var Site $site */
+        $site = $this->data['site'];
+
+        $languageUid = (int)$this->data['databaseRow']['sys_language_uid'];
+        $language = $site->getLanguageById($languageUid);
+        $host = $language->getBase()->getHost();
+
+        $demand = new Demand(
+            $site->getRootPageId(),
+            '*',
+            '',
+            't3://page?uid=' . $this->data['effectivePid'],
+            0
+        );
+        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
+        $redirectsForWildcardHostWithPageId = $this->redirectRepository->findRedirectsByDemand($demand);
+
+        $demand = new Demand(
+            $site->getRootPageId(),
+            '*',
+            '',
+            $this->data['databaseRow']['slug'],
+            0
+        );
+        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
+        $redirectsForWildcardHostWithSlug = $this->redirectRepository->findRedirectsByDemand($demand);
+
+        $demand = new Demand(
+            $site->getRootPageId(),
+            $host,
+            '',
+            't3://page?uid=' . $this->data['effectivePid'],
+            0
+        );
+        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
+        $redirectsForPageHostWithPageId = $this->redirectRepository->findRedirectsByDemand($demand);
+
+        $demand = new Demand(
+            $site->getRootPageId(),
+            $host,
+            '',
+            $this->data['databaseRow']['slug'],
+            0
+        );
+        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
+        $redirectsForPageHostWithSlug = $this->redirectRepository->findRedirectsByDemand($demand);
+
+        $redirects = array_merge(
+            $redirectsForWildcardHostWithPageId,
+            $redirectsForPageHostWithPageId,
+            $redirectsForWildcardHostWithSlug,
+            $redirectsForPageHostWithSlug,
+        );
+        return array($demand, $redirects);
+    }
+
+    protected function prepareView(): void
+    {
+        $templateName = 'List';
+        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
+        $this->view->setTemplate($templateName);
+        $this->view->setTemplateRootPaths(['EXT:redirect_tab/Resources/Private/Templates/Backend']);
+        $this->view->setPartialRootPaths(['EXT:redirect_tab/Resources/Private/Partials/Backend']);
+        $this->view->setLayoutRootPaths(['EXT:redirect_tab/Resources/Private/Layouts']);
     }
 }
