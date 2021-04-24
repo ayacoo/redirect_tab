@@ -26,13 +26,25 @@ class RedirectElement extends AbstractFormElement
     {
         $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class);
 
-        $templateName = 'List';
-        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-        $this->view->setTemplate($templateName);
-        $this->view->setTemplateRootPaths(['EXT:redirect_tab/Resources/Private/Templates/Backend']);
-        $this->view->setPartialRootPaths(['EXT:redirect_tab/Resources/Private/Partials/Backend']);
-        $this->view->setLayoutRootPaths(['EXT:redirect_tab/Resources/Private/Layouts']);
+        $this->prepareView();
+        list($demand, $redirects) = $this->getRedirects();
 
+        $this->view->assignMultiple([
+            'redirects' => $redirects,
+            'demand' => $demand,
+            'pagination' => $this->preparePagination($demand)
+        ]);
+
+        $result = $this->initializeResultArray();
+        $result['html'] = $this->view->render();
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getRedirects(): array
+    {
         /** @var Site $site */
         $site = $this->data['site'];
 
@@ -51,16 +63,22 @@ class RedirectElement extends AbstractFormElement
             0,
             null
         );
+        $redirectsWithPageIdAsIdentifier = $this->redirectRepository->findRedirectsByDemand($demand);
 
-        $this->view->assignMultiple([
-            'redirects' => $this->redirectRepository->findRedirectsByDemand($demand),
-            'demand' => $demand,
-            'pagination' => $this->preparePagination($demand)
-        ]);
-
-        $result = $this->initializeResultArray();
-        $result['html'] = $this->view->render();
-        return $result;
+        $oldDemand = new Demand(
+            $site->getRootPageId(),
+            'source_host',
+            'asc',
+            ['*', $host],
+            '',
+            $this->data['databaseRow']['slug'],
+            [],
+            0,
+            null
+        );
+        $redirectsWithSlugAsIdentifier = $this->redirectRepository->findRedirectsByDemand($oldDemand);
+        $redirects = array_merge($redirectsWithPageIdAsIdentifier, $redirectsWithSlugAsIdentifier);
+        return array($demand, $redirects);
     }
 
     /**
@@ -90,5 +108,15 @@ class RedirectElement extends AbstractFormElement
             $pagination['previousPage'] = $pagination['current'] - 1;
         }
         return $pagination;
+    }
+
+    protected function prepareView(): void
+    {
+        $templateName = 'List';
+        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
+        $this->view->setTemplate($templateName);
+        $this->view->setTemplateRootPaths(['EXT:redirect_tab/Resources/Private/Templates/Backend']);
+        $this->view->setPartialRootPaths(['EXT:redirect_tab/Resources/Private/Partials/Backend']);
+        $this->view->setLayoutRootPaths(['EXT:redirect_tab/Resources/Private/Layouts']);
     }
 }
