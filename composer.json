@@ -1,7 +1,7 @@
 {
 	"name": "ayacoo/redirect-tab",
 	"type": "typo3-cms-extension",
-	"version": "2.0.1",
+	"version": "2.1.0",
 	"description": "Show TYPO3 redirects in the page properties",
 	"authors": [
 		{
@@ -25,7 +25,7 @@
 	},
 	"extra": {
 		"typo3/cms": {
-			"extension-key": "redirect_tab",
+			"extension-key": "redirect-tab",
 			"cms-package-dir": "{$vendor-dir}/typo3/cms",
 			"web-dir": ".Build/Web"
 		}
