@@ -12,8 +12,9 @@
 	"homepage": "https://www.ayacoo.de/",
 	"license": "GPL-2.0-or-later",
 	"require": {
-		"typo3/cms-core": "^11.0",
-		"typo3/cms-redirects": "^11.0"
+		"php": "^7.4 || ^8.0",
+		"typo3/cms-core": "^11.5",
+		"typo3/cms-redirects": "^11.5"
 	},
 	"autoload": {
 		"psr-4": {

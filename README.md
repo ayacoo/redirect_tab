@@ -28,8 +28,8 @@ composer require ayacoo/redirect-tab
 
 | News        | TYPO3      | PHP       | Support / Development                   |
 | ----------- | ---------- | ----------|---------------------------------------- |
-| dev-main    | 11.x       |           | unstable development branch             |
-| 2.x         | 11.x       | 7.4       | features, bugfixes, security updates    |
+| dev-main    | 11.x - 12.x| 7.4 - 8.0 | unstable development branch             |
+| 2.x         | 11.x       | 7.4 - 8.0 | features, bugfixes, security updates    |
 | 1.x         | 10.x       | 7.2 - 7.4 | features, bugfixes, security updates    |
 
 
