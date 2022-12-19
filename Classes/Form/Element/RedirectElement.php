@@ -72,25 +72,7 @@ class RedirectElement extends AbstractFormElement
                 0,
                 null
             );
-            $redirectsWithPageIdAsIdentifier = $this->redirectRepository->findRedirectsByDemand($demand);
-
-            $oldDemand = new Demand(
-                $site->getRootPageId(),
-                'source_host',
-                'asc',
-                ['*', $host],
-                '',
-                $this->data['databaseRow']['slug'],
-                [],
-                0,
-                null
-            );
-            $redirectsWithSlugAsIdentifier = $this->redirectRepository->findRedirectsByDemand($oldDemand);
-
-            $redirects = array_merge(
-                $redirectsWithPageIdAsIdentifier ?? [],
-                $redirectsWithSlugAsIdentifier ?? []
-            );
+            $redirects = $this->redirectRepository->findRedirectsByDemand($demand);
         }
         return [$demand, $redirects];
     }
