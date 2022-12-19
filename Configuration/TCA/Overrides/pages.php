@@ -1,16 +1,15 @@
 <?php
 
-defined('TYPO3_MODE') || die();
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
+defined('TYPO3') || die();
 
 (static function ($extKey, $table): void {
 
-    /**
-     * Extend TCA.
-     */
     $temporaryColumns = [
         'redirects' => [
             'exclude' => true,
-            'label' => '',
+            'label' => 'LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang.xlf:redirect_list',
             'config' => [
                 'type' => 'user',
                 'renderType' => 'listRedirects',
@@ -19,16 +18,16 @@ defined('TYPO3_MODE') || die();
     ];
 
     // Add to TCA pages
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+    ExtensionManagementUtility::addTCAcolumns(
         $table,
         $temporaryColumns
     );
 
 
     // Add additional tab for page properties
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+    ExtensionManagementUtility::addToAllTCAtypes(
         $table,
-        '--div--;LLL:EXT:redirect_tab/Resources/Private/Language/locallang.xlf:tab,' . implode(',', array_keys($temporaryColumns)),
+        '--div--;LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang.xlf:tab,' . implode(',', array_keys($temporaryColumns)),
         '',
         ''
     );

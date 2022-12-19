@@ -6,6 +6,9 @@
 			<trans-unit id="tab" xml:space="preserve">
 				<source>Redirects</source>
 			</trans-unit>
+			<trans-unit id="redirect_list" xml:space="preserve">
+				<source>List of linked redirects for this page</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

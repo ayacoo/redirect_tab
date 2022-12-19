@@ -15,35 +15,30 @@ use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
 class RedirectElement extends AbstractFormElement
 {
-    /**
-     * @var object|\Psr\Log\LoggerAwareInterface|\TYPO3\CMS\Core\SingletonInterface
-     */
-    private $view;
+    private StandaloneView $view;
 
-    /**
-     * @var object|\Psr\Log\LoggerAwareInterface|\TYPO3\CMS\Core\SingletonInterface
-     */
-    private $redirectRepository;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private RedirectRepository $redirectRepository;
 
     public function render(): array
     {
         $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class);
-        $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
 
         $this->prepareView();
         list($demand, $redirects) = $this->getRedirects();
 
-        $event = $this->eventDispatcher->dispatch(new ModifyRedirectsEvent($redirects));
+        $event = $eventDispatcher->dispatch(new ModifyRedirectsEvent($redirects));
         $redirects = $event->getRedirects();
+
+        $backendUriBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Routing\UriBuilder::class);
+        $uriParameters = ['edit' => ['pages' => [$this->data['effectivePid'] => 'edit']]];
+        $returnUrl = $backendUriBuilder->buildUriFromRoute('record_edit', $uriParameters);
 
         $this->view->assignMultiple([
             'redirects' => $redirects,
             'demand' => $demand,
-            'pagination' => $this->preparePagination($demand)
+            'pagination' => $this->preparePagination($demand),
+            'returnUrl' => $returnUrl
         ]);
 
         $result = $this->initializeResultArray();
@@ -97,7 +92,7 @@ class RedirectElement extends AbstractFormElement
                 $redirectsWithSlugAsIdentifier ?? []
             );
         }
-        return array($demand, $redirects);
+        return [$demand, $redirects];
     }
 
     /**
