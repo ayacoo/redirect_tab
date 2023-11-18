@@ -27,7 +27,7 @@ defined('TYPO3') || die();
     // Add additional tab for page properties
     ExtensionManagementUtility::addToAllTCAtypes(
         $table,
-        '--div--;LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang.xlf:tab,' . implode(',', array_keys($temporaryColumns)),
+        '--div--;LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:mlang_tabs_tab,' . implode(',', array_keys($temporaryColumns)),
         '',
         ''
     );
