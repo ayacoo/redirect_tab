@@ -67,7 +67,7 @@ class RedirectElement extends AbstractFormElement
             $host = $language->getBase()->getHost();
 
             $demand = new Demand(
-                $site->getRootPageId(),
+                1,
                 'source_host',
                 'asc',
                 ['*', $host],
@@ -80,7 +80,7 @@ class RedirectElement extends AbstractFormElement
             $redirectsWithPageIdAsIdentifier = $this->redirectRepository->findRedirectsByDemand($demand);
 
             $oldDemand = new Demand(
-                $site->getRootPageId(),
+                1,
                 'source_host',
                 'asc',
                 ['*', $host],
