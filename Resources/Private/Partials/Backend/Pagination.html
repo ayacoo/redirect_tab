@@ -41,23 +41,16 @@
                 </span>
             </li>
             <li class="page-item">
-                <span class="page-link">
+                <span class="page-link" style="width: 150px; text-align:center;">
+                    <f:comment>
+                        We remove the form + input of the pagination here, as this affects the close button in the page properties.
+                    </f:comment>
                     <f:translate extensionName="fluid" key="widget.pagination.page" />
                         <f:variable name="gotToPageUrl">
                             <f:variable name="routeParameters"><ac:routeParameters recordUid="{recordUid}" page="987654322" /></f:variable>
                             <f:be.uri route="record_edit" parameters="{routeParameters}" />
                         </f:variable>
-                        <form data-on-submit="processNavigate" style="display:inline;">
-                            <input type="number"
-                                value="{pagination.current}"
-                                name="paginator-target-page"
-                                class="form-control form-control-sm paginator-input"
-                                min="1"
-                                max="{pagination.numberOfPages}"
-                                data-number-of-pages="{pagination.numberOfPages}"
-                                data-url="{gotToPageUrl}" />
-                        </form>
-                    / {pagination.numberOfPages}
+                        {pagination.current} / {pagination.numberOfPages}
                 </span>
             </li>
             <f:if condition="{pagination.hasMorePages}">
