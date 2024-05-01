@@ -3,7 +3,7 @@
       xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:if condition="{redirects}">
+<f:if condition="{redirects -> f:count()}">
     <f:then>
         <div class="table-fit">
             <table class="table table-striped table-hover">
@@ -11,7 +11,7 @@
                 <tr>
                     <th><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:sys_redirect.source_host"/></th>
                     <th><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:sys_redirect.source_path"/></th>
-                    <th><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:sys_redirect.destination"/></th>
+                    <th><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:sys_redirect.target"/></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -87,6 +87,7 @@
                 </tbody>
             </table>
         </div>
+        <f:render partial="Pagination" arguments="{_all}" />
     </f:then>
     <f:else>
         <f:be.infobox state="-1" title="{f:translate(key: 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:redirect_not_found.title')}">

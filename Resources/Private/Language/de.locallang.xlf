@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2021-04-17T11:47:18Z" product-name="redirect_tab">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2023-11-18T14:44:00Z" product-name="redirect_tab">
 		<header/>
 		<body>
 			<trans-unit id="redirect_list" xml:space="preserve">
 				<source>List of linked redirects for this page</source>
+				<target>Liste der verlinkten Weiterleitungen für diese Seite</target>
 			</trans-unit>
 		</body>
 	</file>
