@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Ayacoo\RedirectTab\Service;
@@ -56,7 +57,7 @@ class RedirectDemandService
 
         /** @var Site $site */
         $site = $this->data['site'] ?? null;
-        if (!$site instanceof NullSite) {
+        if (!$site instanceof NullSite && $site !== null) {
             $languageUid = (int)$this->data['databaseRow']['sys_language_uid'];
             $language = $site->getLanguageById($languageUid);
             $host = $language->getBase()->getHost();
@@ -82,7 +83,7 @@ class RedirectDemandService
     public function preparePagination(Demand $demand = null): array
     {
         $pagination = [];
-        if ($demand) {
+        if ($demand !== null) {
             $count = $this->redirectRepository->countRedirectsByByDemand($demand);
             $numberOfPages = ceil($count / $demand->getLimit());
             $endRecord = $demand->getOffset() + $demand->getLimit();
@@ -96,7 +97,7 @@ class RedirectDemandService
                 'hasLessPages' => $demand->getPage() > 1,
                 'hasMorePages' => $demand->getPage() < $numberOfPages,
                 'startRecord' => $demand->getOffset() + 1,
-                'endRecord' => $endRecord
+                'endRecord' => $endRecord,
             ];
             if ($pagination['current'] < $pagination['numberOfPages']) {
                 $pagination['nextPage'] = $pagination['current'] + 1;

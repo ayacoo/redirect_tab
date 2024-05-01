@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Ayacoo\RedirectTab\Form\Element;
@@ -22,7 +23,7 @@ class RedirectElement extends AbstractFormElement
         $redirectDemandService->setData($this->data ?? []);
 
         $request = $GLOBALS['TYPO3_REQUEST'];
-        $currentPage = (int)($request->getQueryParams()['page'] ?? $request->getParsedBody()['page'] ?? 1);
+        $currentPage = ($request->getQueryParams()['page'] ?? $request->getParsedBody()['page'] ?? 1);
         if ($currentPage < 1) {
             $currentPage = 1;
         }
@@ -34,7 +35,7 @@ class RedirectElement extends AbstractFormElement
             'demand' => $redirectDemandService->getDemand(),
             'pagination' => $redirectDemandService->preparePagination($redirectDemandService->getDemand()),
             'returnUrl' => $this->buildRedirectUrl($currentPage),
-            'recordUid' => (int) $this->data['effectivePid'],
+            'recordUid' => (int)$this->data['effectivePid'],
         ]);
 
         $result = $this->initializeResultArray();
@@ -58,10 +59,10 @@ class RedirectElement extends AbstractFormElement
         $uriParameters = [
             'edit' => [
                 'pages' => [
-                    $this->data['effectivePid'] => 'edit'
-                ]
+                    $this->data['effectivePid'] => 'edit',
+                ],
             ],
-            'page' => $currentPage
+            'page' => $currentPage,
         ];
 
         return $backendUriBuilder->buildUriFromRoute('record_edit', $uriParameters);

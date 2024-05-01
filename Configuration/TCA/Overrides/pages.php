@@ -5,7 +5,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 defined('TYPO3') || die();
 
 (static function ($extKey, $table): void {
-
     $temporaryColumns = [
         'redirects' => [
             'exclude' => true,
@@ -22,7 +21,6 @@ defined('TYPO3') || die();
         $table,
         $temporaryColumns
     );
-
 
     // Add additional tab for page properties
     ExtensionManagementUtility::addToAllTCAtypes(
