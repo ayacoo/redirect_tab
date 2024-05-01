@@ -15,7 +15,7 @@ class RedirectDemandService
 {
     protected array $data = [];
 
-    protected Demand $demand;
+    protected ?Demand $demand = null;
 
     private RedirectRepository $redirectRepository;
     private EventDispatcherInterface $eventDispatcher;
@@ -36,12 +36,12 @@ class RedirectDemandService
         $this->data = $data;
     }
 
-    public function getDemand(): Demand
+    public function getDemand(): ?Demand
     {
         return $this->demand;
     }
 
-    public function setDemand(Demand $demand): void
+    public function setDemand(?Demand $demand): void
     {
         $this->demand = $demand;
     }
