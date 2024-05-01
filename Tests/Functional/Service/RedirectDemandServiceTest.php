@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Ayacoo\Tiktok\Tests\Functional\Service;
 
 use Ayacoo\RedirectTab\Service\RedirectDemandService;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Configuration\Event\SiteConfigurationBeforeWriteEvent;
+use TYPO3\CMS\Core\Configuration\SiteConfiguration;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 final class RedirectDemandServiceTest extends FunctionalTestCase
@@ -30,5 +34,49 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         $result = $this->subject->getRedirects(1);
 
         self::assertCount(0, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function getRedirectsReturnsArray(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_redirect.csv');
+
+        $identifier = 'website-local';
+        $configuration = [
+            'rootPageId' => 1,
+            'base' => 'http://example.com/',
+        ];
+
+
+        $event = new SiteConfigurationBeforeWriteEvent($identifier, $configuration);
+        $eventDispatcherMock = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+        $eventDispatcherMock->expects(self::once())->method('dispatch')->with(self::anything())->willReturn($event);
+
+        $siteConfiguration = new SiteConfiguration(
+            $this->instancePath . '/typo3conf/sites/',
+            $eventDispatcherMock
+        );
+
+        try {
+            $siteConfiguration->write($identifier, $configuration);
+        } catch (\Exception $exception) {
+            self::markTestSkipped($exception->getMessage());
+        }
+
+        $siteFinder = new SiteFinder();
+        $site = $siteFinder->getSiteByPageId(1);
+
+        $data = [];
+        $data['site'] = $site;
+        $data['databaseRow']['sys_language_uid'] = 0;
+        $data['effectivePid'] = 1;
+
+        $this->subject->setData($data);
+        $result = $this->subject->getRedirects(1);
+
+        self::assertCount(1, $result);
     }
 }
