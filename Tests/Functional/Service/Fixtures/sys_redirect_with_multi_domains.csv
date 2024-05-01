@@ -1,0 +1,5 @@
+"sys_redirect"
+,"uid","source_host","source_path","target","target_statuscode","force_https"
+,1,"*","/test","t3://page?uid=1",301,1
+,2,"example.com","/test2","t3://page?uid=1",301,1
+,3,"anotherdomain.com","/test2","t3://page?uid=1",301,1
