@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<xliff version="1.0">
-	<file source-language="en" target-language="it" datatype="plaintext" original="messages" date="2023-11-18T14:44:00Z" product-name="redirect_tab">
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="it" datatype="plaintext" original="EXT:redirect_tab/Resources/Private/Language/it.locallang.xlf" date="2023-11-18T14:44:00Z" product-name="redirect_tab">
 		<header/>
 		<body>
 			<trans-unit id="redirect_list" xml:space="preserve">

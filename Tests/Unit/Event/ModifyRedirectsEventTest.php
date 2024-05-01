@@ -9,11 +9,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 final class ModifyRedirectsEventTest extends UnitTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
      * @test
      */
