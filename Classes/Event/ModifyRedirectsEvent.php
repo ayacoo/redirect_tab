@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Ayacoo\RedirectTab\Event;
 
-final class ModifyRedirectsEvent {
-
+final class ModifyRedirectsEvent
+{
     private array $redirects;
 
     public function __construct(array $redirects)

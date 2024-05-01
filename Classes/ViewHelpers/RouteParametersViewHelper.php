@@ -4,10 +4,6 @@ namespace Ayacoo\RedirectTab\ViewHelpers;
 
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
-/**
- * Unfortunately, the be.editRecord ViewHelper is not sufficient. Therefore, a custom ViewHelper that also provides the
- * page parameter for pagination in addition to the edit record.
- */
 class RouteParametersViewHelper extends AbstractViewHelper
 {
     public function initializeArguments(): void
@@ -22,10 +18,10 @@ class RouteParametersViewHelper extends AbstractViewHelper
         return [
             'edit' => [
                 'pages' => [
-                    $this->arguments['recordUid'] => 'edit'
-                ]
+                    $this->arguments['recordUid'] => 'edit',
+                ],
             ],
-            'page' => $this->arguments['page']
+            'page' => $this->arguments['page'],
         ];
     }
 }
