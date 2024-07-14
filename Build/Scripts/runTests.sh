@@ -216,7 +216,7 @@ else
 fi
 TEST_SUITE=""
 DBMS="mariadb"
-PHP_VERSION="8.1"
+PHP_VERSION="8.2"
 TYPO3_VERSION="12"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
@@ -224,7 +224,7 @@ EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
 CGLCHECK_DRY_RUN=""
 DATABASE_DRIVER=""
-MARIADB_VERSION="10.2"
+MARIADB_VERSION="10.4"
 MYSQL_VERSION="5.5"
 POSTGRES_VERSION="10"
 USED_XDEBUG_MODES="debug,develop"
@@ -253,7 +253,7 @@ while getopts ":s:a:d:i:j:k:p:t:e:xy:z:nhuv" OPT; do
             ;;
         i)
             MARIADB_VERSION=${OPTARG}
-            if ! [[ ${MARIADB_VERSION} =~ ^(10.2|10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11)$ ]]; then
+            if ! [[ ${MARIADB_VERSION} =~ ^(10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
@@ -277,7 +277,7 @@ while getopts ":s:a:d:i:j:k:p:t:e:xy:z:nhuv" OPT; do
             ;;
         t)
             TYPO3_VERSION=${OPTARG}
-            if ! [[ ${TYPO3_VERSION} =~ ^(11|12)$ ]]; then
+            if ! [[ ${TYPO3_VERSION} =~ ^(12|13)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
