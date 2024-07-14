@@ -20,22 +20,26 @@
                 <f:for each="{redirects}" key="domainName" as="redirect">
                     <f:variable name="pageId" value="{rd:targetPageId(target:redirect.target)}" />
                     <f:variable name="targetUri" value="{f:uri.typolink(parameter:redirect.target)}" />
-                    <tr>
+                    <tr
+                        class="{f:if(condition: '{redirect.integrity_status} !== {defaultIntegrityStatus}', then: 'danger')}"
+                        data-uid="{redirect.uid}"
+                        data-multi-record-selection-element="true"
+                    >
                         <td>{redirect.source_host}</td>
                         <td>
                             <f:alias map="{
                                 disable: '{f:translate(key: \'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:record_disabled\')}',
-                                onlystart: '{f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:start\')}: {f:format.date(date: redirect.starttime, format: \'d.m.Y H:i:s\')}',
-                                onlyend: '{f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:stop\')}: {f:format.date(date: redirect.endtime, format: \'d.m.Y H:i:s\')}',
-                                startend: '{f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:start\')}: {f:format.date(date: redirect.starttime, format: \'d.m.Y H:i:s\')} - {f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:stop\')}: {f:format.date(date: redirect.endtime, format: \'d.m.Y H:i:s\')}'
+                                onlystart: '{f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:start\')}: {f:format.date(date: redirect.starttime, format: \'Y-m-d H:i\')}',
+                                onlyend: '{f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:stop\')}: {f:format.date(date: redirect.endtime, format: \'Y-m-d H:i\')}',
+                                startend: '{f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:start\')}: {f:format.date(date: redirect.starttime, format: \'Y-m-d H:i\')} - {f:translate(key: \'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:stop\')}: {f:format.date(date: redirect.endtime, format: \'Y-m-d H:i\')}'
                             }">
-                                <f:if condition="{redirect.disabled}"><f:then><span title="{disable}"></f:then>
-                                    <f:else if="{redirect.starttime} && !{redirect.endtime}"><span title="{onlystart}"></f:else>
-                                    <f:else if="!{redirect.starttime} && {redirect.endtime}"><span title="{onlyend}"></f:else>
-                                    <f:else if="{redirect.starttime} && {redirect.endtime}"><span title="{startend}"></f:else>
-                                    <f:else><span></f:else>
+                                <f:if condition="{redirect.disabled}">
+                                    <f:then><span title="{disable}"><core:iconForRecord table="sys_redirect" row="{redirect}" /></span></f:then>
+                                    <f:else if="{redirect.starttime} && !{redirect.endtime}"><span title="{onlystart}"><core:iconForRecord table="sys_redirect" row="{redirect}" /></span></f:else>
+                                    <f:else if="!{redirect.starttime} && {redirect.endtime}"><span title="{onlyend}"><core:iconForRecord table="sys_redirect" row="{redirect}" /></span></f:else>
+                                    <f:else if="{redirect.starttime} && {redirect.endtime}"><span title="{startend}"><core:iconForRecord table="sys_redirect" row="{redirect}" /></span></f:else>
+                                    <f:else><span><core:iconForRecord table="sys_redirect" row="{redirect}" /></span></f:else>
                                 </f:if>
-                                <core:iconForRecord table="sys_redirect" row="{redirect}" /></span>
                             </f:alias>
                             <be:link.editRecord returnUrl="{returnUrl}" table="sys_redirect" uid="{redirect.uid}" title="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:edit')}: {redirect.source_path}">
                                 {redirect.source_path -> f:format.crop(maxCharacters:100)}

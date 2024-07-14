@@ -31,10 +31,10 @@ class RedirectElement extends AbstractFormElement
         $this->prepareView();
 
         $this->view->assignMultiple([
-            'redirects' => $redirectDemandService->getRedirects($currentPage),
+            'redirects' => $redirectDemandService->getRedirects((int) $currentPage),
             'demand' => $redirectDemandService->getDemand(),
             'pagination' => $redirectDemandService->preparePagination($redirectDemandService->getDemand()),
-            'returnUrl' => $this->buildRedirectUrl($currentPage),
+            'returnUrl' => $this->buildRedirectUrl((int) $currentPage),
             'recordUid' => (int)$this->data['effectivePid'],
         ]);
 
