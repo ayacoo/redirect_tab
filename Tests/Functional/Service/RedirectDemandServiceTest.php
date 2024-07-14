@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Ayacoo\Tiktok\Tests\Functional\Service;
 
 use Ayacoo\RedirectTab\Service\RedirectDemandService;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use TYPO3\CMS\Core\Configuration\Event\SiteConfigurationBeforeWriteEvent;
-use TYPO3\CMS\Core\Configuration\SiteConfiguration;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Configuration\SiteWriter;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -27,9 +26,7 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         $this->subject = $this->get(RedirectDemandService::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRedirectsReturnsPerDefaultAnEmptyArray(): void
     {
         $result = $this->subject->getRedirects();
@@ -37,9 +34,7 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         self::assertCount(0, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRedirectsWithNullSiteReturnsEmptyArray(): void
     {
         $site = new NullSite();
@@ -51,9 +46,7 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         self::assertCount(0, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRedirectsReturnsArray(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
@@ -65,18 +58,9 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
             'base' => 'http://example.com/',
         ];
 
-
-        $event = new SiteConfigurationBeforeWriteEvent($identifier, $configuration);
-        $eventDispatcherMock = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
-        $eventDispatcherMock->expects(self::once())->method('dispatch')->with(self::anything())->willReturn($event);
-
-        $siteConfiguration = new SiteConfiguration(
-            $this->instancePath . '/typo3conf/sites/',
-            $eventDispatcherMock
-        );
-
+        $siteWriter = $this->get(SiteWriter::class);
         try {
-            $siteConfiguration->write($identifier, $configuration);
+            $siteWriter->write($identifier, $configuration);
         } catch (\Exception $exception) {
             self::markTestSkipped($exception->getMessage());
         }
@@ -95,9 +79,7 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         self::assertCount(1, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRedirectsWithMultiDomainsReturnsArray(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
@@ -109,18 +91,9 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
             'base' => 'http://example.com/',
         ];
 
-
-        $event = new SiteConfigurationBeforeWriteEvent($identifier, $configuration);
-        $eventDispatcherMock = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
-        $eventDispatcherMock->expects(self::once())->method('dispatch')->with(self::anything())->willReturn($event);
-
-        $siteConfiguration = new SiteConfiguration(
-            $this->instancePath . '/typo3conf/sites/',
-            $eventDispatcherMock
-        );
-
+        $siteWriter = $this->get(SiteWriter::class);
         try {
-            $siteConfiguration->write($identifier, $configuration);
+            $siteWriter->write($identifier, $configuration);
         } catch (\Exception $exception) {
             self::markTestSkipped($exception->getMessage());
         }
