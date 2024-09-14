@@ -8,12 +8,12 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'info@ayacoo.de',
     'state' => 'stable',
     'clearCacheOnLoad' => 0,
-    'version' => '3.1.3',
+    'version' => '3.1.4',
     'constraints' => [
         'depends' => [
             'typo3' => '12.4.0-12.9.99',
             'redirects' => '12.4.0-12.9.99',
-            'php' => '8.1.0-8.2.99',
+            'php' => '8.1.0-8.3.99',
         ],
         'conflicts' => [
         ],
