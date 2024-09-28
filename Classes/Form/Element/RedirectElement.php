@@ -18,7 +18,6 @@ class RedirectElement extends AbstractFormElement
 
     public function render(): array
     {
-        /** @var RedirectDemandService $redirectDemandService */
         $redirectDemandService = GeneralUtility::makeInstance(RedirectDemandService::class);
         $redirectDemandService->setData($this->data ?? []);
 

@@ -7,6 +7,11 @@ defined('TYPO3') || die();
 (static function ($extKey, $table): void {
     $temporaryColumns = [
         'redirects' => [
+            'displayCond' => [
+                'AND' => [
+                    'REC:NEW:false',
+                ],
+            ],
             'exclude' => true,
             'label' => 'LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang.xlf:redirect_list',
             'config' => [
