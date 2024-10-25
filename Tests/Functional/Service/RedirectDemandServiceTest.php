@@ -6,8 +6,11 @@ namespace Ayacoo\Tiktok\Tests\Functional\Service;
 
 use Ayacoo\RedirectTab\Service\RedirectDemandService;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Configuration\SiteConfiguration;
 use TYPO3\CMS\Core\Configuration\SiteWriter;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -52,20 +55,22 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_redirect.csv');
 
-        $identifier = 'website-local';
-        $configuration = [
-            'rootPageId' => 1,
-            'base' => 'http://example.com/',
-        ];
-
-        $siteWriter = $this->get(SiteWriter::class);
-        try {
-            $siteWriter->write($identifier, $configuration);
-        } catch (\Exception $exception) {
-            self::markTestSkipped($exception->getMessage());
-        }
-
-        $siteFinder = new SiteFinder();
+        $mainSite = new Site('1-main', 1, [
+            'base' => 'https://example.com/',
+            'languages' => [
+                [
+                    'languageId' => 0,
+                    'base' => 'https://example.com/',
+                    'locale' => 'en-US',
+                ],
+                [
+                    'languageId' => 2,
+                    'base' => 'https://example.com/de/',
+                    'locale' => 'de-DE',
+                ],
+            ],
+        ]);
+        $siteFinder = $this->createSiteFinder($mainSite);
         $site = $siteFinder->getSiteByPageId(1);
 
         $data = [];
@@ -85,20 +90,22 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_redirect_with_multi_domains.csv');
 
-        $identifier = 'website-local';
-        $configuration = [
-            'rootPageId' => 1,
-            'base' => 'http://example.com/',
-        ];
-
-        $siteWriter = $this->get(SiteWriter::class);
-        try {
-            $siteWriter->write($identifier, $configuration);
-        } catch (\Exception $exception) {
-            self::markTestSkipped($exception->getMessage());
-        }
-
-        $siteFinder = new SiteFinder();
+        $mainSite = new Site('1-main', 1, [
+            'base' => 'https://example.org/',
+            'languages' => [
+                [
+                    'languageId' => 0,
+                    'base' => 'https://example.com/',
+                    'locale' => 'en-US',
+                ],
+                [
+                    'languageId' => 2,
+                    'base' => 'https://example.com/de/',
+                    'locale' => 'de-DE',
+                ],
+            ],
+        ]);
+        $siteFinder = $this->createSiteFinder($mainSite);
         $site = $siteFinder->getSiteByPageId(1);
 
         $data = [];
@@ -110,5 +117,16 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
         $result = $this->subject->getRedirects(1);
 
         self::assertCount(2, $result);
+    }
+
+    private function createSiteFinder(Site ...$sites): SiteFinder
+    {
+        $siteConfigurationMock = $this->createMock(SiteConfiguration::class);
+        $sitesArray = array_combine(
+            array_map(static function (Site $site) { return $site->getIdentifier(); }, $sites),
+            $sites
+        );
+        $siteConfigurationMock->method('getAllExistingSites')->willReturn($sitesArray);
+        return new SiteFinder($siteConfigurationMock, $this->createMock(FrontendInterface::class));
     }
 }
