@@ -11,6 +11,7 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Redirects\Utility\RedirectConflict;
 
 class RedirectElement extends AbstractFormElement
 {
@@ -35,6 +36,7 @@ class RedirectElement extends AbstractFormElement
             'pagination' => $redirectDemandService->preparePagination($redirectDemandService->getDemand()),
             'returnUrl' => $this->buildRedirectUrl((int) $currentPage),
             'recordUid' => (int)$this->data['effectivePid'],
+            'defaultIntegrityStatus' => RedirectConflict::NO_CONFLICT,
         ]);
 
         $result = $this->initializeResultArray();
