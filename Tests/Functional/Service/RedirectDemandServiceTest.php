@@ -8,7 +8,6 @@ use Ayacoo\RedirectTab\Service\RedirectDemandService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\SiteConfiguration;
-use TYPO3\CMS\Core\Configuration\SiteWriter;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
