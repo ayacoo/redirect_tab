@@ -11,6 +11,7 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Redirects\Utility\RedirectConflict;
 
 class RedirectElement extends AbstractFormElement
 {
@@ -18,7 +19,6 @@ class RedirectElement extends AbstractFormElement
 
     public function render(): array
     {
-        /** @var RedirectDemandService $redirectDemandService */
         $redirectDemandService = GeneralUtility::makeInstance(RedirectDemandService::class);
         $redirectDemandService->setData($this->data ?? []);
 
@@ -31,11 +31,12 @@ class RedirectElement extends AbstractFormElement
         $this->prepareView();
 
         $this->view->assignMultiple([
-            'redirects' => $redirectDemandService->getRedirects($currentPage),
+            'redirects' => $redirectDemandService->getRedirects((int)$currentPage),
             'demand' => $redirectDemandService->getDemand(),
             'pagination' => $redirectDemandService->preparePagination($redirectDemandService->getDemand()),
-            'returnUrl' => $this->buildRedirectUrl($currentPage),
+            'returnUrl' => $this->buildRedirectUrl((int)$currentPage),
             'recordUid' => (int)$this->data['effectivePid'],
+            'defaultIntegrityStatus' => RedirectConflict::NO_CONFLICT,
         ]);
 
         $result = $this->initializeResultArray();
