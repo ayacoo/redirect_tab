@@ -1,7 +1,7 @@
 {
 	"name": "ayacoo/redirect-tab",
 	"type": "typo3-cms-extension",
-	"version": "3.1.4",
+	"version": "3.1.5",
 	"description": "Show TYPO3 redirects in the page properties",
 	"authors": [
 		{
@@ -12,7 +12,7 @@
 	"homepage": "https://www.ayacoo.de/",
 	"license": "GPL-2.0-or-later",
 	"require": {
-		"php": ">= 8.1 < 8.4",
+		"php": ">= 8.1 < 8.5",
 		"typo3/cms-core": "^12.4",
 		"typo3/cms-redirects": "^12.4"
 	},
