@@ -24,8 +24,8 @@ composer require ayacoo/redirect-tab
 
 | redirect_tab | TYPO3 | PHP       | Support / Development       |
 |--------------|-------|-----------|-----------------------------|
-| 4.x          | 13.x  | 8.2 - 8.3 | features, bugfixes, security updates |
-| 3.x          | 12.x  | 8.1 - 8.3 | bugfixes, security updates |
+| 4.x          | 13.x  | 8.2 - 8.4 | features, bugfixes, security updates |
+| 3.x          | 12.x  | 8.1 - 8.4 | bugfixes, security updates  |
 | 2.x          | 11.x  | 7.4 - 8.0 | bugfixes, security updates  |
 | 1.x          | 10.x  | 7.2 - 7.4 | no support any more         |
 
