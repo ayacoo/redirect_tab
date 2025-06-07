@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ayacoo\Tiktok\Tests\Functional\Service;
+namespace Ayacoo\RedirectTab\Tests\Functional\Service;
 
 use Ayacoo\RedirectTab\Service\RedirectDemandService;
 use PHPUnit\Framework\Attributes\Test;
