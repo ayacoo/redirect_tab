@@ -80,11 +80,11 @@ class RedirectDemandService
         return $event->getRedirects();
     }
 
-    public function preparePagination(Demand $demand = null): array
+    public function preparePagination(Demand $demand): array
     {
         $pagination = [];
         if ($demand !== null) {
-            $count = $this->redirectRepository->countRedirectsByDemand($demand);
+            $count = $this->redirectRepository->countRedirectsByByDemand($demand);
             $numberOfPages = ceil($count / $demand->getLimit());
             $endRecord = $demand->getOffset() + $demand->getLimit();
             if ($endRecord > $count) {

@@ -18,7 +18,7 @@
 
                 <tbody>
                 <f:for each="{redirects}" key="domainName" as="redirect">
-                    <f:variable name="pageId" value="{rd:targetPageId(target:redirect.target)}" />
+                    <f:variable name="page" value="{rd:targetPageRecord(target:redirect.target)}" />
                     <f:variable name="targetUri" value="{f:uri.typolink(parameter:redirect.target)}" />
                     <tr
                         class="{f:if(condition: '{redirect.integrity_status} !== {defaultIntegrityStatus}', then: 'danger')}"
@@ -48,8 +48,8 @@
 
                         <td>
                             <f:link.typolink parameter="{redirect.target}" target="_blank" title="{f:translate(key: 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:visit_destination')} {targetUri}">{targetUri}</f:link.typolink>
-                            (<f:if condition="{pageId}"><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:pageID"/>: {pageId},
-                        </f:if><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:destination_status_code"/>: {redirect.target_statuscode})
+                            (<f:if condition="{page}"><f:then><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:pageID"/>: {page.uid},</f:then></f:if>
+                            <f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:destination_status_code"/>: {redirect.target_statuscode})
                         </td>
 
                         <td>
