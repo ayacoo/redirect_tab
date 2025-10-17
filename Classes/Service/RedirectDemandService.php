@@ -80,7 +80,7 @@ class RedirectDemandService
         return $event->getRedirects();
     }
 
-    public function preparePagination(Demand $demand): array
+    public function preparePagination(?Demand $demand): array
     {
         $pagination = [];
         if ($demand !== null) {
