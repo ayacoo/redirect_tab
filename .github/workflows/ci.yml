@@ -35,6 +35,7 @@ jobs:
           - "8.2"
           - "8.3"
           - "8.4"
+          - "8.5"
   code-quality:
     name: "Code quality checks"
     runs-on: ubuntu-22.04
@@ -73,6 +74,7 @@ jobs:
           - "8.2"
           - "8.3"
           - "8.4"
+          - "8.5"
   unit-tests:
     name: "Unit tests"
     runs-on: ubuntu-22.04
@@ -122,6 +124,9 @@ jobs:
           - typo3-version: "^13.4"
             php-version: "8.4"
             composer-dependencies: highest
+          - typo3-version: "^13.4"
+            php-version: "8.5"
+            composer-dependencies: highest
   functional-tests:
     name: "Functional tests"
     runs-on: ubuntu-22.04
@@ -131,7 +136,7 @@ jobs:
       # rest matrix jobs be executed anyway.
       fail-fast: false
       matrix:
-        php: [ '8.2', '8.3', '8.4' ]
+        php: [ '8.2', '8.3', '8.4', '8.5' ]
         composerInstall: [ 'composerInstallHighest' ]
     steps:
       - name: Checkout
@@ -146,14 +151,17 @@ jobs:
       - name: Functional Tests with mariadb (max)
         run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mariadb -i 10.11 -s functional
 
-      - name: Functional Tests with mysql (min/max)
+      - name: Functional Tests with mysql (min)
         run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mysql -i 8.0 -s functional
+
+      - name: Functional Tests with mysql (max)
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mysql -i 8.4 -s functional
 
       - name: Functional Tests with postgres (min)
         run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d postgres -i 10 -s functional
 
       - name: Functional Tests with postgres (max)
-        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d postgres -i 16 -s functional
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d postgres -i 18 -s functional
 
       - name: Functional Tests with sqlite
         run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d sqlite -s functional

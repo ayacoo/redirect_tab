@@ -12,7 +12,7 @@
 	"homepage": "https://www.ayacoo.de/",
 	"license": "GPL-2.0-or-later",
 	"require": {
-		"php": ">=8.2 < 8.5",
+		"php": ">=8.2 < 8.6",
 		"typo3/cms-core": "^13.4",
 		"typo3/cms-redirects": "^13.4"
 	},
