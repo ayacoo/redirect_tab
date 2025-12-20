@@ -46,7 +46,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.2"
-            if ! [[ ${DBMS_VERSION} =~ ^(10.2|10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(10.2|10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1|11.4|11.8)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -62,7 +62,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="5.5"
-            if ! [[ ${DBMS_VERSION} =~ ^(5.5|5.6|5.7|8.0)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(5.5|5.6|5.7|8.0|8.4)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -77,7 +77,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10"
-            if ! [[ ${DBMS_VERSION} =~ ^(10|11|12|13|14|15|16)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(10|11|12|13|14|15|16|17|18)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -212,11 +212,14 @@ Options:
             - 10.11  long-term, maintained until 2028-02
             - 11.0   development series
             - 11.1   short-term development series
+            - 11.4  long-term, maintained until 2033-01
+            - 11.8  long-term, maintained until 2033-10
         With "-d mysql":
             - 5.5   unmaintained since 2018-12 (default)
             - 5.6   unmaintained since 2021-02
             - 5.7   maintained until 2023-10
             - 8.0   maintained until 2026-04
+			- 8.4   long-term, maintained until 2032-30
         With "-d postgres":
             - 10    unmaintained since 2022-11-10 (default)
             - 11    unmaintained since 2023-11-09
@@ -224,7 +227,9 @@ Options:
             - 13    maintained until 2025-11-13
             - 14    maintained until 2026-11-12
             - 15    maintained until 2027-11-11
-            - 16    maintained until 2028-11-09
+            - 16    maintained until 2028-11-09 (default)
+            - 17    maintained until 2029-11-08
+            - 18    maintained until 2029-11-14
 
     -t <11|12|13>
         Only with -s composerInstall|composerInstallMin|composerInstallMax
@@ -233,7 +238,7 @@ Options:
             - 12.4: use TYPO3 v12
             - 13.4: use TYPO3 v13
 
-    -p <7.4|8.0|8.1|8.2|8.3|8.4>
+    -p <7.4|8.0|8.1|8.2|8.3|8.4|8.5>
         Specifies the PHP minor version to be used
             - 7.4: use PHP 7.4 (default)
             - 8.0: use PHP 8.0
@@ -241,6 +246,7 @@ Options:
             - 8.2: use PHP 8.2
             - 8.3: use PHP 8.3
             - 8.4: use PHP 8.4
+			- 8.5: use PHP 8.5
 
     -e "<phpunit options>"
         Only with -s docsGenerate|functional|unit
@@ -363,7 +369,7 @@ while getopts "a:b:s:d:i:p:e:t:xy:nhu" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2|8.3|8.4|8.5)$ ]]; then
                 INVALID_OPTIONS+=("-p ${OPTARG}")
             fi
             ;;
