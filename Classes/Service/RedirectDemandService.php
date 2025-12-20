@@ -18,8 +18,8 @@ class RedirectDemandService
         protected EventDispatcherInterface $eventDispatcher,
         protected ?Demand $demand = null,
         protected array $data = []
-    )
-    { }
+    ) {
+    }
 
     /**
      * @param int $page
