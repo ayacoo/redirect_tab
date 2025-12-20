@@ -8,44 +8,18 @@ use Ayacoo\RedirectTab\Event\ModifyRedirectsEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Redirects\Repository\Demand;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
 class RedirectDemandService
 {
-    protected array $data = [];
-
-    protected ?Demand $demand = null;
-
-    private RedirectRepository $redirectRepository;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct()
-    {
-        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class);
-        $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    public function setData(array $data): void
-    {
-        $this->data = $data;
-    }
-
-    public function getDemand(): ?Demand
-    {
-        return $this->demand;
-    }
-
-    public function setDemand(?Demand $demand): void
-    {
-        $this->demand = $demand;
-    }
+    public function __construct(
+        protected RedirectRepository $redirectRepository,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected ?Demand $demand = null,
+        protected array $data = []
+    )
+    { }
 
     /**
      * @param int $page
@@ -66,12 +40,10 @@ class RedirectDemandService
                 $page,
                 'source_host',
                 'asc',
+                Demand::DEFAULT_REDIRECT_TYPE,
                 ['*', $host],
                 '',
                 't3://page?uid=' . $this->data['effectivePid'],
-                [],
-                0,
-                null
             );
             $redirects = $this->redirectRepository->findRedirectsByDemand($this->demand);
         }
@@ -107,5 +79,20 @@ class RedirectDemandService
             }
         }
         return $pagination;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function setData(array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function getDemand(): ?Demand
+    {
+        return $this->demand;
     }
 }
