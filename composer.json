@@ -1,7 +1,7 @@
 {
 	"name": "ayacoo/redirect-tab",
 	"type": "typo3-cms-extension",
-	"version": "4.0.2",
+	"version": "4.0.3",
 	"description": "Show TYPO3 redirects in the page properties",
 	"authors": [
 		{
