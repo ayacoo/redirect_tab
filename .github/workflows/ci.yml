@@ -7,6 +7,7 @@ on:
     branches:
       - main
       - 4.0
+      - 42/constructor
   pull_request:
 permissions:
   contents: read
