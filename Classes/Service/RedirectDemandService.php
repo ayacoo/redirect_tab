@@ -8,7 +8,6 @@ use Ayacoo\RedirectTab\Event\ModifyRedirectsEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Redirects\Repository\Demand;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
@@ -18,13 +17,10 @@ class RedirectDemandService
 
     protected ?Demand $demand = null;
 
-    private RedirectRepository $redirectRepository;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct()
-    {
-        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class);
-        $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+    public function __construct(
+        private readonly RedirectRepository $redirectRepository,
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     public function getData(): array
@@ -84,7 +80,7 @@ class RedirectDemandService
     {
         $pagination = [];
         if ($demand !== null) {
-            $count = $this->redirectRepository->countRedirectsByByDemand($demand);
+            $count = $this->redirectRepository->countRedirectsByDemand($demand);
             $numberOfPages = ceil($count / $demand->getLimit());
             $endRecord = $demand->getOffset() + $demand->getLimit();
             if ($endRecord > $count) {
