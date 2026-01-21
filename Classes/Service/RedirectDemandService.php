@@ -17,13 +17,11 @@ class RedirectDemandService
 
     protected ?Demand $demand = null;
 
-    private RedirectRepository $redirectRepository;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct()
+    public function __construct(
+        private readonly RedirectRepository $redirectRepository,
+        private readonly EventDispatcherInterface $eventDispatcher
+    )
     {
-        $this->redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class);
-        $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     public function getData(): array
@@ -83,7 +81,7 @@ class RedirectDemandService
     {
         $pagination = [];
         if ($demand) {
-            $count = $this->redirectRepository->countRedirectsByByDemand($demand);
+            $count = $this->redirectRepository->countRedirectsByDemand($demand);
             $numberOfPages = ceil($count / $demand->getLimit());
             $endRecord = $demand->getOffset() + $demand->getLimit();
             if ($endRecord > $count) {
