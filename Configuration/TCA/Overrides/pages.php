@@ -9,6 +9,12 @@ defined('TYPO3_MODE') || die();
      */
     $temporaryColumns = [
         'redirects' => [
+            'displayCond' => [
+                'AND' => [
+                    'REC:NEW:false',
+                    'USER:' . \Ayacoo\RedirectTab\UserFunctions\RedirectAccessDisplayCondition::class . '->canListRedirects',
+                ],
+            ],
             'exclude' => true,
             'label' => '',
             'config' => [
