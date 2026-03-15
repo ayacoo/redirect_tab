@@ -1,5 +1,6 @@
 <?php
 
+use Ayacoo\RedirectTab\UserFunctions\RedirectAccessDisplayCondition;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3') || die();
@@ -8,6 +9,12 @@ defined('TYPO3') || die();
 
     $temporaryColumns = [
         'redirects' => [
+            'displayCond' => [
+                'AND' => [
+                    'REC:NEW:false',
+                    'USER:' . RedirectAccessDisplayCondition::class . '->canListRedirects',
+                ],
+            ],
             'exclude' => true,
             'label' => 'LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang.xlf:redirect_list',
             'config' => [
