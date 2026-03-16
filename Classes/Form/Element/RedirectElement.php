@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Ayacoo\RedirectTab\Form\Element;
 
 use Ayacoo\RedirectTab\Event\ModifyRedirectsEvent;
+use Ayacoo\RedirectTab\UserFunctions\RedirectAccessDisplayCondition;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
@@ -40,7 +41,9 @@ class RedirectElement extends AbstractFormElement
         $event = $this->eventDispatcher->dispatch(new ModifyRedirectsEvent($redirects));
         $redirects = $event->getRedirects();
 
+        $redirectAccess = GeneralUtility::makeInstance(RedirectAccessDisplayCondition::class);
         $this->view->assignMultiple([
+            'canEditRedirects' => $redirectAccess->canEditRedirects(),
             'redirects' => $redirects,
             'demand' => $demand,
             'pagination' => $this->preparePagination($demand)
