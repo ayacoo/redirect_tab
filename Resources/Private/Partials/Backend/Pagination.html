@@ -46,7 +46,7 @@
                         We remove the form + input of the pagination here, as this affects the close button in the page properties.
                     </f:comment>
                     <f:translate extensionName="fluid" key="widget.pagination.page" />
-                        <f:variable name="gotToPageUrl">
+                        <f:variable name="goToPageUrl">
                             <f:variable name="routeParameters"><ac:routeParameters recordUid="{recordUid}" page="987654322" /></f:variable>
                             <f:be.uri route="record_edit" parameters="{routeParameters}" />
                         </f:variable>

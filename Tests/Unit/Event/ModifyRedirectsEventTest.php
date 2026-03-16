@@ -20,4 +20,14 @@ final class ModifyRedirectsEventTest extends UnitTestCase
 
         self::assertEquals($expected, $result);
     }
+
+    #[Test]
+    public function setRedirectsUpdatesRedirects(): void
+    {
+        $subject = new ModifyRedirectsEvent([]);
+
+        $subject->setRedirects(['foo']);
+
+        self::assertEquals(['foo'], $subject->getRedirects());
+    }
 }
