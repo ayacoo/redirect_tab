@@ -8,7 +8,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
 class RedirectAccessDisplayCondition
 {
-    private const string TABLE_NAME = 'sys_redirect';
+    private const TABLE_NAME = 'sys_redirect';
 
     public function canListRedirects(): bool
     {
