@@ -1,5 +1,6 @@
 <?php
 
+use Ayacoo\RedirectTab\UserFunctions\RedirectAccessDisplayCondition;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3') || die();
@@ -10,6 +11,7 @@ defined('TYPO3') || die();
             'displayCond' => [
                 'AND' => [
                     'REC:NEW:false',
+                    'USER:' . RedirectAccessDisplayCondition::class . '->canListRedirects',
                 ],
             ],
             'exclude' => true,
