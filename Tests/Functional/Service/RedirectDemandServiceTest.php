@@ -6,6 +6,7 @@ namespace Ayacoo\RedirectTab\Tests\Functional\Service;
 
 use Ayacoo\RedirectTab\Service\RedirectDemandService;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\SiteConfiguration;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
@@ -24,6 +25,9 @@ final class RedirectDemandServiceTest extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $backendUserAuthentication = $this->createMock(BackendUserAuthentication::class);
+        $backendUserAuthentication->method('isAdmin')->withAnyParameters()->willReturn(true);
+        $GLOBALS['BE_USER'] = $backendUserAuthentication;
 
         $this->subject = $this->get(RedirectDemandService::class);
     }

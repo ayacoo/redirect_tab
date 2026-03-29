@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ayacoo\RedirectTab\Form\Element;
 
 use Ayacoo\RedirectTab\Service\RedirectDemandService;
+use Ayacoo\RedirectTab\UserFunctions\RedirectAccessDisplayCondition;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
@@ -34,7 +35,9 @@ class RedirectElement extends AbstractFormElement
 
         $this->prepareView($request);
 
+        $redirectAccess = GeneralUtility::makeInstance(RedirectAccessDisplayCondition::class);
         $this->view->assignMultiple([
+            'canEditRedirects' => $redirectAccess->canEditRedirects(),
             'redirects' => $redirectDemandService->getRedirects((int)$currentPage),
             'demand' => $redirectDemandService->getDemand(),
             'pagination' => $redirectDemandService->preparePagination($redirectDemandService->getDemand()),
