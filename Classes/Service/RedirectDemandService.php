@@ -13,34 +13,12 @@ use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
 class RedirectDemandService
 {
-    protected array $data = [];
-
-    protected ?Demand $demand = null;
-
     public function __construct(
-        private readonly RedirectRepository $redirectRepository,
-        private readonly EventDispatcherInterface $eventDispatcher
+        protected RedirectRepository $redirectRepository,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected ?Demand $demand = null,
+        protected array $data = []
     ) {
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    public function setData(array $data): void
-    {
-        $this->data = $data;
-    }
-
-    public function getDemand(): ?Demand
-    {
-        return $this->demand;
-    }
-
-    public function setDemand(?Demand $demand): void
-    {
-        $this->demand = $demand;
     }
 
     /**
@@ -62,12 +40,10 @@ class RedirectDemandService
                 $page,
                 'source_host',
                 'asc',
+                Demand::DEFAULT_REDIRECT_TYPE,
                 ['*', $host],
                 '',
                 't3://page?uid=' . $this->data['effectivePid'],
-                [],
-                0,
-                null
             );
             $redirects = $this->redirectRepository->findRedirectsByDemand($this->demand);
         }
@@ -103,5 +79,20 @@ class RedirectDemandService
             }
         }
         return $pagination;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function setData(array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function getDemand(): ?Demand
+    {
+        return $this->demand;
     }
 }

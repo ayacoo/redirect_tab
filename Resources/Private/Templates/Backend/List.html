@@ -41,9 +41,16 @@
                                     <f:else><span><core:iconForRecord table="sys_redirect" row="{redirect}" /></span></f:else>
                                 </f:if>
                             </f:alias>
-                            <be:link.editRecord returnUrl="{returnUrl}" table="sys_redirect" uid="{redirect.uid}" title="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:edit')}: {redirect.source_path}">
-                                {redirect.source_path -> f:format.crop(maxCharacters:100)}
-                            </be:link.editRecord>
+                            <f:if condition="{canEditRedirects}">
+                                <f:then>
+                                <be:link.editRecord returnUrl="{returnUrl}" table="sys_redirect" uid="{redirect.uid}" title="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:edit')}: {redirect.source_path}">
+                                    {redirect.source_path -> f:format.crop(maxCharacters:100)}
+                                </be:link.editRecord>
+                                </f:then>
+                                <f:else>
+                                    {redirect.source_path -> f:format.crop(maxCharacters:100)}
+                                </f:else>
+                            </f:if>
                         </td>
 
                         <td>
@@ -64,6 +71,7 @@
                                         </f:link.external>
                                     </f:else>
                                 </f:if>
+
                                 <f:if condition="{canEditRedirects}">
                                     <f:then>
                                         <f:if condition="{redirect.disabled} == 1">
@@ -74,24 +82,9 @@
                                                 <a class="btn btn-default" href="{be:moduleLink(route:'tce_db', arguments:'{redirect: returnUrl}', query:'data[sys_redirect][{redirect.uid}][disabled]=1', currentUrlParameterName:'redirect')}" title="{f:translate(key:'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:hide')}"><core:icon identifier="actions-edit-hide" /></a>
                                             </f:else>
                                         </f:if>
-                                    </f:then>
-                                    <f:else>
-                                        <span class="btn btn-default disabled"><core:icon identifier="empty-empty" /></span>
-                                    </f:else>
-                                </f:if>
-
-                                <f:if condition="{canEditRedirects}">
-                                    <f:then>
                                         <be:link.editRecord returnUrl="{returnUrl}" class="btn btn-default" table="sys_redirect" uid="{redirect.uid}" title="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:edit')}">
                                             <core:icon identifier="actions-open" />
                                         </be:link.editRecord>
-                                    </f:then>
-                                    <f:else>
-                                        <span class="btn btn-default disabled"><core:icon identifier="empty-empty" /></span>
-                                    </f:else>
-                                </f:if>
-                                <f:if condition="{canEditRedirects}">
-                                    <f:then>
                                         <a class="btn btn-default t3js-modal-trigger"
                                            href="{be:moduleLink(route:'tce_db', arguments:'{redirect: returnUrl}', query:'cmd[sys_redirect][{redirect.uid}][delete]=1', currentUrlParameterName:'redirect')}"
                                            title="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:delete')}"
@@ -102,9 +95,6 @@
                                             <core:icon identifier="actions-delete" />
                                         </a>
                                     </f:then>
-                                    <f:else>
-                                        <span class="btn btn-default disabled"><core:icon identifier="empty-empty" /></span>
-                                    </f:else>
                                 </f:if>
                             </div>
                         </td>
@@ -119,11 +109,9 @@
         <f:be.infobox state="-1" title="{f:translate(key: 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:redirect_not_found.title')}">
             <p><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:redirect_not_found.message"/></p>
             <f:if condition="{canEditRedirects}">
-                <f:then>
-                    <be:link.newRecord returnUrl="{returnUrl}" class="btn btn-primary" table="sys_redirect">
-                        <f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:redirect_create"/>
-                    </be:link.newRecord>
-                </f:then>
+                <be:link.newRecord returnUrl="{returnUrl}" class="btn btn-primary" table="sys_redirect">
+                    <f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:redirect_create"/>
+                </be:link.newRecord>
             </f:if>
         </f:be.infobox>
     </f:else>

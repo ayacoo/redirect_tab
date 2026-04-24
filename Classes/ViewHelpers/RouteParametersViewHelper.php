@@ -9,8 +9,8 @@ class RouteParametersViewHelper extends AbstractViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerArgument('recordUid', 'integer', 'Record Uid', true, 0);
-        $this->registerArgument('page', 'integer', 'Pagination Page', true, 0);
+        $this->registerArgument('recordUid', 'integer', 'Record Uid', true);
+        $this->registerArgument('page', 'integer', 'Pagination Page', true);
     }
 
     public function render(): array
